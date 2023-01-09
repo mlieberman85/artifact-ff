@@ -34,12 +34,12 @@ require (
 	go.opencensus.io v0.24.0 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
-	golang.org/x/crypto v0.4.0 // indirect
-	golang.org/x/net v0.3.0 // indirect
+	golang.org/x/crypto v0.5.0 // indirect
+	golang.org/x/net v0.5.0 // indirect
 	golang.org/x/oauth2 v0.3.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.3.0 // indirect
-	golang.org/x/text v0.5.0 // indirect
+	golang.org/x/sys v0.4.0 // indirect
+	golang.org/x/text v0.6.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20221206210731-b1a01be3a5f6 // indirect
@@ -121,7 +121,7 @@ require (
 	go.uber.org/goleak v1.1.12 // indirect
 	gocloud.dev v0.26.0 // indirect
 	golang.org/x/mod v0.6.0 // indirect
-	golang.org/x/term v0.3.0 // indirect
+	golang.org/x/term v0.4.0 // indirect
 	golang.org/x/time v0.2.0 // indirect
 	golang.org/x/tools v0.2.1-0.20221108172846-9474ca31d0df // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
@@ -137,7 +137,7 @@ require (
 	github.com/CycloneDX/cyclonedx-go v0.7.0
 	github.com/go-git/go-git/v5 v5.5.1
 	github.com/mitchellh/go-homedir v1.1.0
-	github.com/nats-io/nats-server/v2 v2.9.10
+	github.com/nats-io/nats-server/v2 v2.9.11
 	github.com/nats-io/nats.go v1.22.1
 	github.com/ossf/scorecard/v4 v4.8.0
 	github.com/satori/go.uuid v1.2.0
