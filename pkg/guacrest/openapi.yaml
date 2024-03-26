@@ -76,8 +76,174 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "502":
           $ref: "#/components/responses/BadGateway"
-
-
+  "/query/pkgInfo/{purl}":
+   get:
+     summary: Get all information related to the package based on the purl
+     operationId: getPackageInformation
+     parameters:
+       - $ref: "#/components/parameters/PaginationSpec"
+       - name: purl
+         description: the purl of the query package
+         in: path
+         required: true
+         schema:
+           type: string
+     responses:
+       "200":
+         $ref: "#/components/responses/Info"
+       "400":
+         $ref: "#/components/responses/BadRequest"
+       "500":
+         $ref: "#/components/responses/InternalServerError"
+       "502":
+         $ref: "#/components/responses/BadGateway"
+  "/query/pkgInfo/{purl}/vulns":
+   get:
+     summary: Get vulnerability information related to the package based on the purl
+     operationId: getPackageVulnInformation
+     parameters:
+       - $ref: "#/components/parameters/PaginationSpec"
+       - name: purl
+         description: the purl of the query package
+         in: path
+         required: true
+         schema:
+           type: string
+     responses:
+       "200":
+         $ref: "#/components/responses/VulnInfo"
+       "400":
+         $ref: "#/components/responses/BadRequest"
+       "500":
+         $ref: "#/components/responses/InternalServerError"
+       "502":
+         $ref: "#/components/responses/BadGateway"
+  "/query/pkgInfo/{purl}/sbom":
+   get:
+     summary: Get sbom location related to the package based on the purl
+     operationId: getPackageSbomInformation
+     parameters:
+       - $ref: "#/components/parameters/PaginationSpec"
+       - name: purl
+         description: the purl of the query package
+         in: path
+         required: true
+         schema:
+           type: string
+     responses:
+       "200":
+         $ref: "#/components/responses/SbomInfo"
+       "400":
+         $ref: "#/components/responses/BadRequest"
+       "500":
+         $ref: "#/components/responses/InternalServerError"
+       "502":
+         $ref: "#/components/responses/BadGateway"
+  "/query/pkgInfo/{purl}/slsa":
+   get:
+     summary: Get slsa location related to the package based on the purl
+     operationId: getPackageSlsaInformation
+     parameters:
+       - $ref: "#/components/parameters/PaginationSpec"
+       - name: purl
+         description: the purl of the query package
+         in: path
+         required: true
+         schema:
+           type: string
+     responses:
+       "200":
+         $ref: "#/components/responses/SlsaInfo"
+       "400":
+         $ref: "#/components/responses/BadRequest"
+       "500":
+         $ref: "#/components/responses/InternalServerError"
+       "502":
+         $ref: "#/components/responses/BadGateway"
+  "/query/artInfo/{hash}":
+   get:
+     summary: Get all information related to the artifact based on the hash
+     operationId: getArtifactInformation
+     parameters:
+       - $ref: "#/components/parameters/PaginationSpec"
+       - name: hash
+         description: the hash of the artifact
+         in: path
+         required: true
+         schema:
+           type: string
+     responses:
+       "200":
+         $ref: "#/components/responses/Info"
+       "400":
+         $ref: "#/components/responses/BadRequest"
+       "500":
+         $ref: "#/components/responses/InternalServerError"
+       "502":
+         $ref: "#/components/responses/BadGateway"
+  "/query/artInfo/{hash}/vulns":
+   get:
+     summary: Get vulnerability information related to the artifact based on the hash
+     operationId: getArtifactVulnInformation
+     parameters:
+       - $ref: "#/components/parameters/PaginationSpec"
+       - name: hash
+         description: the hash of the artifact
+         in: path
+         required: true
+         schema:
+           type: string
+     responses:
+       "200":
+         $ref: "#/components/responses/VulnInfo"
+       "400":
+         $ref: "#/components/responses/BadRequest"
+       "500":
+         $ref: "#/components/responses/InternalServerError"
+       "502":
+         $ref: "#/components/responses/BadGateway"
+  "/query/artInfo/{hash}/sbom":
+   get:
+     summary: Get sbom location related to the artifact based on the hash
+     operationId: getArtifactSbomInformation
+     parameters:
+       - $ref: "#/components/parameters/PaginationSpec"
+       - name: hash
+         description: the hash of the artifact
+         in: path
+         required: true
+         schema:
+           type: string
+     responses:
+       "200":
+         $ref: "#/components/responses/SbomInfo"
+       "400":
+         $ref: "#/components/responses/BadRequest"
+       "500":
+         $ref: "#/components/responses/InternalServerError"
+       "502":
+         $ref: "#/components/responses/BadGateway"
+  "/query/artInfo/{hash}/slsa":
+   get:
+     summary: Get slsa location related to the artifact based on the hash
+     operationId: getArtifactSlsaInformation
+     parameters:
+       - $ref: "#/components/parameters/PaginationSpec"
+       - name: hash
+         description: the hash of the artifact
+         in: path
+         required: true
+         schema:
+           type: string
+     responses:
+       "200":
+         $ref: "#/components/responses/SlsaInfo"
+       "400":
+         $ref: "#/components/responses/BadRequest"
+       "500":
+         $ref: "#/components/responses/InternalServerError"
+       "502":
+         $ref: "#/components/responses/BadGateway"
 components:
   parameters:
     PaginationSpec:
@@ -98,6 +264,14 @@ components:
   schemas:
     Purl:
       type: string
+    Vulnerability:
+      type: string
+    CertifyBad:
+      type: string
+    Slsa:
+      type: string
+    Sbom:
+      type: string
     PaginationInfo:
       type: object
       description: >
@@ -117,6 +291,91 @@ components:
           type: string
   responses:
     # for code 200
+    Info:
+      description: bulk information
+      content:
+        application/json:
+          schema:
+            type: object
+            required: 
+              - PaginationInfo
+              - certifyBads
+              - vulnerabilities
+              - SbomList
+              - SlsaList
+            properties:
+              PaginationInfo:
+                $ref: "#/components/schemas/PaginationInfo"
+              vulnerabilities:
+                type: array
+                items: 
+                  $ref: "#/components/schemas/Vulnerability"
+              certifyBads:
+                type: array
+                items: 
+                  $ref: "#/components/schemas/CertifyBad"
+              SbomList:
+                type: array
+                items: 
+                  $ref: "#/components/schemas/Sbom"
+              SlsaList:
+                type: array
+                items: 
+                  $ref: "#/components/schemas/Slsa"
+    VulnInfo:
+      description: purl information
+      content:
+        application/json:
+          schema:
+            type: object
+            required: 
+              - PaginationInfo
+              - vulnerabilities
+              - certifyBads
+
+            properties:
+              PaginationInfo:
+                $ref: "#/components/schemas/PaginationInfo"
+              vulnerabilities:
+                type: array
+                items: 
+                  $ref: "#/components/schemas/Vulnerability"
+              certifyBads:
+                type: array
+                items: 
+                  $ref: "#/components/schemas/CertifyBad"
+    SbomInfo:
+      description: sbom location
+      content:
+        application/json:
+          schema:
+            type: object
+            required: 
+              - PaginationInfo
+              - SbomList
+            properties:
+              PaginationInfo:
+                $ref: "#/components/schemas/PaginationInfo"
+              SbomList:
+                type: array
+                items: 
+                  $ref: "#/components/schemas/Sbom"
+    SlsaInfo:
+      description: slsa location
+      content:
+        application/json:
+          schema:
+            type: object
+            required: 
+              - PaginationInfo
+              - SlsaList
+            properties:
+              PaginationInfo:
+                $ref: "#/components/schemas/PaginationInfo"
+              SlsaList:
+                type: array
+                items: 
+                  $ref: "#/components/schemas/Slsa"
     PurlList:
       description: A list of purls
       content:

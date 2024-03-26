@@ -231,13 +231,46 @@ func (c *cyclonedxParser) GetIdentifiers(ctx context.Context) (*common.Identifie
 	return c.identifierStrings, nil
 }
 
+func getArtifactInput(subject string) (*model.ArtifactInputSpec, error) {
+	split := strings.Split(subject, ":")
+	if len(split) != 2 {
+		return nil, fmt.Errorf("failed to parse artifact. Needs to be in algorithm:digest form")
+	}
+	artifactInput := &model.ArtifactInputSpec{
+		Algorithm: strings.ToLower(string(split[0])),
+		Digest:    strings.ToLower(string(split[1])),
+	}
+	return artifactInput, nil
+}
+
 func (c *cyclonedxParser) GetPredicates(ctx context.Context) *assembler.IngestPredicates {
 	logger := logging.FromContext(ctx)
 	preds := &assembler.IngestPredicates{}
 	var toplevel []*model.PkgInputSpec
 
 	if c.cdxBom.Metadata != nil && c.cdxBom.Metadata.Component != nil {
-		toplevel = c.getPackageElement(c.cdxBom.Metadata.Component.BOMRef)
+		if c.cdxBom.Metadata.Component.Type == cdx.ComponentTypeContainer {
+			toplevel = c.getPackageElement(c.cdxBom.Metadata.Component.BOMRef)
+
+			if toplevel[0].Version != nil && *toplevel[0].Version != "" {
+				artInput, err := getArtifactInput(*toplevel[0].Version)
+				if err != nil {
+					logger.Errorf("CDX artifact was not parsable: %v", err)
+				}
+
+				preds.IsOccurrence = append(preds.IsOccurrence, assembler.IsOccurrenceIngest{
+					Pkg:      toplevel[0],
+					Artifact: artInput,
+					IsOccurrence: &model.IsOccurrenceInputSpec{
+						Justification: "spdx file with checksum",
+					},
+				})
+
+			}
+
+			preds.IsDependency = append(preds.IsDependency, common.CreateTopLevelIsDeps(toplevel[0], c.packagePackages, nil, "top-level package GUAC heuristic connecting to each file/package")...)
+		}
+
 	}
 
 	// adding top level package edge manually for all depends on package
@@ -252,7 +285,7 @@ func (c *cyclonedxParser) GetPredicates(ctx context.Context) *assembler.IngestPr
 		} else {
 			timestamp, err = time.Parse(time.RFC3339, c.cdxBom.Metadata.Timestamp)
 			if err != nil {
-				logger.Errorf("SPDX document had invalid created time %q : %v", c.cdxBom.Metadata.Timestamp, err)
+				logger.Errorf("CDX document had invalid created time %q : %v", c.cdxBom.Metadata.Timestamp, err)
 				return nil
 			}
 		}

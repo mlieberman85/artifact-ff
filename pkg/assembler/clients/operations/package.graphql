@@ -90,6 +90,7 @@ query PackageVersions($filter: PkgSpec!) {
         name
         versions {
           id
+          purl
           version
           qualifiers {
             key

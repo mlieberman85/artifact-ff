@@ -41,7 +41,7 @@ func startServer() {
 
 	httpClient := &http.Client{}
 	gqlClient := getGraphqlServerClientOrExit(ctx, httpClient)
-	handler := server.NewDefaultServer(gqlClient)
+	handler := server.NewDefaultServer(gqlClient, logger)
 	handlerWrapper := gen.NewStrictHandler(handler, nil)
 	router := chi.NewRouter()
 	router.Mount("/", gen.Handler(handlerWrapper))
